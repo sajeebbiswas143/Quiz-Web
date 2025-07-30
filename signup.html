@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Sign Up | Fun with Quiz</title>
+  <link rel="stylesheet" href="auth.css">
+</head>
+<body>
+  <div class="auth-container">
+    <h2>Sign Up</h2>
+    <input type="text" id="signup-username" placeholder="Choose Username" />
+    <input type="password" id="signup-password" placeholder="Choose Password" />
+    <button onclick="signup()">Sign Up</button>
+    <p>Already have an account? <a href="login.html" style="color:#ccc;">Login</a></p>
+  </div>
+
+  <script>
+    function signup() {
+      const username = document.getElementById("signup-username").value;
+      const password = document.getElementById("signup-password").value;
+
+      if (!username || !password) {
+        alert("Please fill in all fields.");
+        return;
+      }
+
+      if (localStorage.getItem(`user_${username}`)) {
+        alert("Username already exists. Please choose another.");
+        return;
+      }
+
+      localStorage.setItem(`user_${username}`, password);
+      alert("Signup successful! You can now log in.");
+      window.location.href = "login.html";
+    }
+  </script>
+</body>
+</html>

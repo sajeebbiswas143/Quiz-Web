@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Fun with Quiz</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="bootstrap" href="bootstrap.css"/>
+
+</head>
+<body>
+ <header class="navbar">
+    <img src="logo.jpg" alt="quiz logo" class="logo"/>
+    <h1>Learn with Quiz</h1>
+    <div class="login-signup">
+        <button class="login-btn">Login</button>
+        <button class="signup-btn">Sign Up</button>
+    </div>
+ </header>
+   <main class="main-container">
+    <div class="circle">Let's solve Quiz</div>
+    <div class="input-container">
+      <input type="text" id="username" placeholder="Enter your name" />
+      <button id="startBtn" class="start-btn">Start</button>
+    </div>
+   </main>
+
+   <footer class="footer">
+     <p>&copy; 2025 Fun with Quiz. All rights reserved.</p>
+  </footer>
+  <script>
+  document.getElementById("startBtn").addEventListener("click", function () {
+    const name = document.getElementById("username").value;
+    // You can store name in localStorage if needed on quiz.html
+    localStorage.setItem("quizUser", name);
+    window.location.href = "quiz.html";
+  });
+
+  document.querySelector(".login-btn").addEventListener("click", function () {
+    window.location.href = "login.html";
+  });
+
+  document.querySelector(".signup-btn").addEventListener("click", function () {
+    window.location.href = "signup.html";
+  });
+
+</script>
+</body>
+
+</html>
