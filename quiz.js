@@ -52,3 +52,16 @@ function showResult() {
 document.addEventListener("DOMContentLoaded", () => {
   showQuestion(currentQuestionIndex);
 });
+const questionCount = document.getElementById("question-count");
+const totalQuestions = shuffledQuestions.length;
+
+function updateQuestionCount(index) {
+  questionCount.textContent = `Question ${index + 1}/${totalQuestions}`;
+}
+
+// Update question count whenever a question is shown
+const originalShowQuestion = showQuestion;
+showQuestion = function(index) {
+  updateQuestionCount(index);
+  originalShowQuestion(index);
+};
