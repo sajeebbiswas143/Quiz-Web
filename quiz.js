@@ -1,15 +1,22 @@
 let currentQuestionIndex = 0;
-let score = 0;
+let totalScore = 0;
+let setScore = 0;
+const questionsPerSet = 5; // Number of questions in each set
 
-// Shuffle the questions array
+// Shuffle questions
 const shuffledQuestions = questions.sort(() => 0.5 - Math.random());
 
 const h1 = document.querySelector(".quiz-container h1");
-const optionButtons = document.querySelectorAll(".option-btn");
+const questionCount = document.getElementById("question-count");
+const optionsContainer = document.querySelector(".options");
+let optionButtons = document.querySelectorAll(".option-btn");
+
+const totalQuestions = shuffledQuestions.length;
 
 function showQuestion(index) {
   const q = shuffledQuestions[index];
   h1.innerText = q.text;
+  updateQuestionCount(index);
 
   optionButtons.forEach((btn, i) => {
     btn.innerText = `(${String.fromCharCode(65 + i)}) ${q.options[i]}`;
@@ -21,47 +28,69 @@ function showQuestion(index) {
       const selected = btn.innerText.replace(/^\([A-D]\)\s*/, "");
       if (selected === q.answer) {
         btn.style.backgroundColor = "green";
-        score++;
-        alert("✅ Correct!");
+        setScore++;
+        totalScore++;
       } else {
         btn.style.backgroundColor = "red";
-        alert(`❌ Wrong! Correct is: ${q.answer}`);
       }
 
       optionButtons.forEach(b => b.disabled = true);
 
-      // Move to next question after 1 second
       setTimeout(() => {
         currentQuestionIndex++;
-        if (currentQuestionIndex < shuffledQuestions.length) {
-          showQuestion(currentQuestionIndex);
+        if (
+          currentQuestionIndex % questionsPerSet === 0 ||
+          currentQuestionIndex === totalQuestions
+        ) {
+          showSetResult();
         } else {
-          showResult();
+          showQuestion(currentQuestionIndex);
         }
-      }, 1000);
+      }, 700);
     };
   });
 }
 
-function showResult() {
-  h1.innerText = `Quiz Completed! You scored ${score} out of ${shuffledQuestions.length}`;
-  document.querySelector(".options").innerHTML = `<button onclick="location.href='index.html'">Back to Home</button>`;
+function showSetResult() {
+  const setNumber = Math.ceil(currentQuestionIndex / questionsPerSet);
+  h1.innerText = `Set ${setNumber} Complete!`;
+  const setTotal = Math.min(questionsPerSet, totalQuestions - (setNumber - 1) * questionsPerSet);
+
+  optionsContainer.innerHTML = `
+    <p>You scored <strong>${setScore}</strong> out of ${setTotal} in this set.</p>
+    ${
+      currentQuestionIndex < totalQuestions
+        ? `<button onclick="nextSet()">Next Set</button>`
+        : `<button onclick="showFinalResult()">See Final Result</button>`
+    }
+  `;
+
+  // Reset per-set score
+  setScore = 0;
 }
 
-// Start the quiz
-document.addEventListener("DOMContentLoaded", () => {
+function nextSet() {
+  optionsContainer.innerHTML = `
+    ${Array.from({ length: 4 })
+      .map(() => '<button class="option-btn"></button>')
+      .join("")}
+  `;
+  optionButtons = document.querySelectorAll(".option-btn");
   showQuestion(currentQuestionIndex);
-});
-const questionCount = document.getElementById("question-count");
-const totalQuestions = shuffledQuestions.length;
+}
+
+function showFinalResult() {
+  h1.innerText = `🎉 Quiz Completed!`;
+  optionsContainer.innerHTML = `
+    <p>Your final score is <strong>${totalScore}</strong> out of ${totalQuestions}.</p>
+    <button onclick="location.href='index.html'">Back to Home</button>
+  `;
+}
 
 function updateQuestionCount(index) {
   questionCount.textContent = `Question ${index + 1}/${totalQuestions}`;
 }
 
-// Update question count whenever a question is shown
-const originalShowQuestion = showQuestion;
-showQuestion = function(index) {
-  updateQuestionCount(index);
-  originalShowQuestion(index);
-};
+document.addEventListener("DOMContentLoaded", () => {
+  showQuestion(currentQuestionIndex);
+});
